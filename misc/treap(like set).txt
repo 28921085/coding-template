@@ -1,0 +1,115 @@
+typedef long long ll;
+struct Treap {
+    ll val, pri, sz,tag;     //key,priority,size
+    Treap* l, * r;       //左右子樹
+    Treap() {
+        sz = 0;
+        l = r = NULL;
+    }
+    Treap(ll _key) {
+        val = _key;
+        pri = rand();   //隨機的數維持樹的平衡
+        sz = 1;
+        tag = 0;
+        l = r = NULL;
+    }
+};
+Treap* root=new Treap();
+int Size(Treap* x) { return x ? x->sz : 0; }
+void pull(Treap* x) { x->sz = Size(x->l) + Size(x->r) + 1; }
+//記得在Treap結構裡加入變數tag
+void push(Treap* x) {
+    if (x->tag) {                      //如果區間要翻轉
+        swap(x->l, x->r);             //交換左右子樹
+        if (x->l)    x->l->tag ^= 1;  //加tag到左子樹
+        if (x->r)    x->r->tag ^= 1;  //加tag到右子樹
+        x->tag = 0;//NO_TAG=0
+    }
+}
+Treap* merge(Treap* a, Treap* b) {
+    if (!a || !b)    return a ? a : b; //其中一個子樹為空則回傳另一個
+    if (a->pri > b->pri) {              //如果a的pri比較大則a比較上面
+        push(a);
+        a->r = merge(a->r, b);         //將a的右子樹跟b合併
+        pull(a);
+        return a;
+    }
+    else {                             //如果b的pri比較大則b比較上面
+        push(b);
+        b->l = merge(a, b->l);         //將b的左子樹根a合併
+        pull(b);
+        return b;
+    }
+}
+void splitByKey(Treap* x, ll k, Treap*& a, Treap*& b) {
+    if (!x) { a = b = NULL; }
+    else if (x->val <= k) {
+        push(x);
+        a = x;
+        splitByKey(x->r, k, a->r, b);
+        pull(a);
+    }
+    else {
+        push(x);
+        b = x;
+        splitByKey(x->l, k, a, b->l);
+        pull(b);
+    }
+}
+void splitByKth(Treap* x, int k, Treap*& a, Treap*& b) {
+    if (!x) { a = b = NULL; }
+    else if (Size(x->l) + 1 <= k) {
+        push(x);
+        a = x;  //如果左子樹+自己的size小於等於k則左子樹跟自己為k個以內
+        splitByKth(x->r, k - Size(x->l) - 1, a->r, b);
+        pull(a);
+    }
+    else {
+        push(x);
+        b = x;  //如果左子樹+自己的size大於k個則右子樹跟自己會分到右邊
+        splitByKth(x->l, k, a, b->l);
+        pull(b);
+    }
+}
+void insert(ll val) {             //新增一個值為val的元素
+    Treap* x = new Treap(val);    //設一個treap節點
+    Treap* l, * r;
+    splitByKey(root, val, l, r);  //找到新節點要放的位置
+    root = merge(merge(l, x), r);   //合併到原本的treap裡
+}
+void erase(ll val) {              //移除所有值為val的元素
+    Treap* l, * mid, * r;
+    splitByKey(root, val, l, r);  //把小於等於val的丟到l
+    splitByKey(l, val - 1, l, mid); //小於val的丟到l,等於val的就會在mid裡
+    root = merge(l, r);            //將除了val以外的值合併
+}
+void erase_Kth(int k) {              //移除第k小的元素
+    Treap* l, * mid, * r;
+    splitByKth(root, k, l, r);  
+    splitByKth(l, k - 1, l, mid); 
+    root = merge(l, r);            
+}
+ll find_Kth(Treap * t,int k) {//t=root 找第k小
+    if (t->l && k <= t->l->sz)
+        return find_Kth(t->l, k);
+    else {
+        int sz = 1;
+        if (t->l)
+            sz = t->l->sz + 1;
+        if (k > sz && t->r)
+            return find_Kth(t->r, k - sz);
+    }
+    return t->val;//這可以改
+}
+int count_less(int k) {//count element less than k (slow)
+    int l = 1, r = s.size()/*set.size()*/, mid, ans = 1e6;
+    while (l <= r) {
+        mid = (l + r) / 2;
+        int p = find_Kth(root, mid);
+            if (p >= k)
+                ans = min(ans, mid), r = mid - 1;
+            else
+                l = mid + 1;
+    }
+    return ans - 1;
+}

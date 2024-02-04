@@ -1,0 +1,23 @@
+typedef long long ll;
+    struct bit{
+        int sz;
+        vector<ll>p;
+        int lowbit(int n){return n&(-n);}
+        void update(int n,int val){
+            for(;n<=sz;n+=lowbit(n))
+                p[n]+=val;
+        }
+        ll q(int n){
+            ll ans=0;
+            for(;n;n-=lowbit(n))
+                ans+=p[n];
+            return ans;
+        }
+        ll query(int l,int r){
+            return q(r)-q(l-1);
+        }
+        bit(int n){
+            sz=n;
+            p=vector<ll>(n+1);
+        }
+    };

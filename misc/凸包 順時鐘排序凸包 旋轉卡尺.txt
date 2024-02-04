@@ -1,0 +1,74 @@
+#include bitsstdc++.h
+using namespace std; 
+struct Point {double x, y;} P[100010], L[100010], U[100010],CH[100010];
+int n;
+double ans;
+ 向量OA叉積向量OB。大於零表示從OA到OB為逆時針旋轉。
+double cross(Point o, Point a, Point b){
+    return (a.x - o.x)  (b.y - o.y) - (a.y - o.y)  (b.x - o.x);}
+ 小於。依座標大小排序，先排 x 再排 y。
+bool compare(Point a, Point b){
+    return (a.x  b.x)  (a.x == b.x && a.y  b.y);}
+double dis(Point a,Point b){
+    return sqrt((a.x-b.x)(a.x-b.x)+(a.y-b.y)(a.y-b.y));}
+void Andrew_monotone_chain(){
+     將所有點依照座標大小排序
+    sort(P, P+n, compare);
+    int m = 0;   m 為凸包頂點數目
+     包下半部
+    for (int i=0; in; ++i){
+        while (m = 2 && cross(CH[m-2], CH[m-1], P[i]) = 0) m--;
+        CH[m++] = P[i];
+    }
+     包上半部，不用再包入方才包過的終點，但會再包一次起點
+    for (int i=n-2, t=m+1; i=0; --i){
+        while (m = t && cross(CH[m-2], CH[m-1], P[i]) = 0) m--;
+        CH[m++] = P[i];
+    }
+    m--;     最後一個點是重複出現兩次的起點，故要減一。
+    for(int i=0;im;++i)
+        P[i]=CH[i];
+    n=m;
+}
+float cross2(Point a, Point b){
+    return a.x  b.y - a.y  b.x;}
+void rotating_caliper(){
+     尋找凸包，Andrew's Monotone Chain。 
+    sort(P, P+n, compare);
+    int l = 0, u = 0;    下凸包的點數、上凸包的點數
+    for (int i=0; in; ++i) {
+        while (l = 2 && cross(L[l-2], L[l-1], P[i]) = 0) l--;
+        while (u = 2 && cross(U[u-2], U[u-1], P[i]) = 0) u--;
+        L[l++] = P[i];
+        U[u++] = P[i];
+    }
+     旋轉卡尺 
+     下凸包額外補上一個凸包頂點，以便操作。
+    if (u-2 = 0) L[l] = U[u-2];
+    for (int i=0, j=u-1; il && j0; ){
+        cout  夾到了頂點 L[i] 與頂點 U[j];
+        ans=max(ans,dis(L[i],U[j]));
+         下方邊與上方邊的張開角度：
+         小於180°，則上方前進。想像成下方很平、上方變凸。
+         大於180°，則下方前進。想像成上方很平、下方變凸。
+         等於180°，則同時前進，亦可擇一前進。
+        Point tL,tU;
+        tL.x=L[i+1].x-L[i].x;
+        tL.y=L[i+1].y-L[i].y;
+        tU.x=U[j-1].x-U[j].x;
+        tU.y=U[j-1].y-U[j].y;
+        if (cross2(tL, tU)  0)
+            i++;     下方前進
+        else
+            j--;     上方前進
+    }
+}
+int main(){
+    cin.tie(0); cout.tie(0); iossync_with_stdio(false);
+    cin  n;
+    for(int i=0;in;++i)
+        cin  P[i].x  P[i].y;
+    Andrew_monotone_chain();
+    rotating_caliper();
+    cout  fixed    setprecision(10)  ans ; 
+}

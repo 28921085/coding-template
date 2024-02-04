@@ -1,0 +1,46 @@
+//模逆元 
+#include <bits/stdc++.h>
+using namespace std;
+typedef long long ll;
+#define MOD   1000000007LL               
+
+const int MAXN = 1e6+5;
+ll fact[MAXN], invp[MAXN]; 
+
+ll nCr(int n, int r){
+    if(r < 0 || r > n)  return 0;
+    return (fact[n] * ((invp[n-r] * invp[r]) % MOD)) % MOD;
+}
+
+ll mod_exp(ll b,ll p,ll m){
+	ll x=1;
+	while(p){
+		if(p&1)x=(x*b)%m;
+		b=(b*b)%m;
+		p=p>>1;
+	}
+	return x;
+}
+
+ll invFermat(ll a,ll p){
+	return mod_exp(a,p-2,p);
+}
+
+int main(){
+    ios_base::sync_with_stdio(false);cin.tie(NULL);
+    fact[0] = 1, invp[0] = 1;
+    for(int i = 1; i < MAXN; i++)
+        fact[i] = (fact[i-1] * i) % MOD;
+    invp[MAXN-1] = invFermat(fact[MAXN-1], MOD);
+    for(int i = MAXN-2; i >= 1; i--)
+        invp[i] = (invp[i+1] * (i+1)) % MOD;
+    ll a, b, c, d;
+    while(cin >> a){
+    	cin >> b >> c >> d;
+    	ll ans1 = nCr(a, b);
+    	ll ans2 = nCr(c, d);
+    	ll ans3 = mod_exp(ans2, b, MOD);
+    	ll final_ans = ans1*ans3;
+    	cout << final_ans%MOD << '\n';
+    }
+}

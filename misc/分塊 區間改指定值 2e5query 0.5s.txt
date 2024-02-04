@@ -1,0 +1,169 @@
+typedef long long ll;
+#define SQN 2000
+int num[SQN*SQN];
+struct blk {
+    vector<ll> local;    //每塊的全部元素
+    ll global;           //儲存每塊的總和
+    ll tag,div;              //儲存整塊一起更新的值
+    blk() {                //初始化
+        local.clear();    //清空區間元素
+        tag = global = 0; //將區間總和先設為0
+    	div=0;
+	}
+};
+blk dat[SQN];
+void build(int n) {
+    int p = sqrt(n);//塊數
+    for (int i = 0; i < n; i++) {
+        dat[i / p].local.push_back(num[i]);
+        dat[i / p].global += num[i];
+    }
+}
+ll query(int l,int r,int n) {//l r base 0 l<=range<=r
+    int p=sqrt(n),L = l / p, R = r / p;
+    ll ans = 0;
+    if (L == R) {    //如果都在同一塊直接一個一個跑過去就好
+        for (int i = l%p,j=r%p; i <= j; i++){
+        	if(dat[L].div)
+        		ans += dat[L].div + dat[L].tag;
+            else
+				ans += dat[L].local[i] + dat[L].tag;
+        }
+    }
+    else {
+        for (int i = l%p; i <  p; i++){    //最左的那一塊
+            if(dat[L].div)
+        		ans += dat[L].div + dat[L].tag;
+            else
+				ans += dat[L].local[i] + dat[L].tag;
+        }
+        for (int i = L + 1; i < R; i++)    //中間每塊的總和
+            ans += dat[i].global;
+        for (int i = r%p; i >-1; i--){    //最右的那一塊
+            if(dat[R].div)
+        		ans += dat[R].div + dat[R].tag;
+            else
+				ans += dat[R].local[i] + dat[R].tag;
+        }
+    }
+    return ans;
+}
+void update(int l,int r,int n,ll val) {//tag
+    int p = sqrt(n), L = l / p, R = r / p;
+    if (L == R) {
+    	if(dat[L].div){
+    		for(int i=0;i<dat[L].local.size();i++)
+    			dat[L].local[i]=dat[L].div+dat[L].tag;
+			dat[L].global=(dat[L].div+dat[L].tag)*dat[L].local.size();
+		}
+		else if(dat[L].tag){
+			dat[L].global=0;
+			for(int i=0;i<dat[L].local.size();i++){
+    			dat[L].local[i]+=dat[L].tag;
+				dat[L].global+=dat[L].local[i];
+			}
+		}
+		dat[L].div=dat[L].tag=0;
+        for (int i = l%p,j=r%p; i <= j; i++) {
+            dat[L].local[i] += val;
+	        dat[L].global += val;
+	    }   
+    }
+    else {
+    	if(dat[L].div){
+    		for(int i=0;i<dat[L].local.size();i++)
+    			dat[L].local[i]=dat[L].div+dat[L].tag;
+			dat[L].global=(dat[L].div+dat[L].tag)*dat[L].local.size();
+		}
+		else if(dat[L].tag){
+			dat[L].global=0;
+			for(int i=0;i<dat[L].local.size();i++){
+    			dat[L].local[i]+=dat[L].tag;
+				dat[L].global+=dat[L].local[i];
+			}
+		}
+		dat[L].div=dat[L].tag=0;
+        for (int i = l%p; i < p; i++) {  //最左的那一塊
+            dat[L].local[i] += val;
+            dat[L].global += val;
+        }
+        for (int i = L + 1; i < R; i++) {  //中間每塊
+            dat[i].tag += val;
+            dat[i].global += val * p;
+        }
+        if(dat[R].div){
+    		for(int i=0;i<dat[R].local.size();i++)
+    			dat[R].local[i]=dat[R].div+dat[R].tag;
+			dat[R].global=(dat[R].div+dat[R].tag)*dat[R].local.size();
+		}
+		else if(dat[R].tag){
+			dat[R].global=0;
+			for(int i=0;i<dat[R].local.size();i++){
+    			dat[R].local[i]+=dat[R].tag;
+				dat[R].global+=dat[R].local[i];
+			}
+		}
+		dat[R].div=dat[R].tag=0;
+        for (int i =r%p; i >-1; i--) {  //最右的那一塊
+            dat[R].local[i] += val;
+            dat[R].global += val;
+        }
+    }
+}
+void update2(int l,int r,int n,ll val) {//div (div cover tag)
+    int p = sqrt(n), L = l / p, R = r / p;
+    if (L == R) {
+    	if(dat[L].div){
+    		for(int i=0;i<dat[L].local.size();i++)
+    			dat[L].local[i]=dat[L].div+dat[L].tag;
+    		dat[L].tag=dat[L].div=0;
+		}
+    	else if(dat[L].tag){
+    		for(int i=0;i<dat[L].local.size();i++)
+    			dat[L].local[i]+=dat[L].tag;
+    		dat[L].tag=0;
+		}
+        for (int i = l%p,j=r%p; i <= j; i++) 
+            dat[L].local[i] = val;
+        dat[L].global=0;
+        for(int i=0;i<dat[L].local.size();i++)
+        	dat[L].global+=dat[L].local[i];
+    }
+    else {
+    	if(dat[L].div){
+    		for(int i=0;i<dat[L].local.size();i++)
+    			dat[L].local[i]=dat[L].div+dat[L].tag;
+    		dat[L].tag=dat[L].div=0;
+		}
+    	else if(dat[L].tag){
+    		for(int i=0;i<dat[L].local.size();i++)
+    			dat[L].local[i]+=dat[L].tag;
+    		dat[L].tag=0;
+		}
+        for (int i = l%p; i < p; i++) 
+            dat[L].local[i] = val;
+        dat[L].global=0;
+        for(int i=0;i<dat[L].local.size();i++)
+        	dat[L].global+=dat[L].local[i];
+        for (int i = L + 1; i < R; i++) {  //中間每塊
+           	dat[i].tag=0;
+           	dat[i].div=val;
+           	dat[i].global=val*p;
+        }
+        if(dat[R].div){
+    		for(int i=0;i<dat[R].local.size();i++)
+    			dat[R].local[i]=dat[R].div+dat[R].tag;
+    		dat[R].tag=dat[R].div=0;
+		}
+    	else if(dat[R].tag){
+    		for(int i=0;i<dat[R].local.size();i++)
+    			dat[R].local[i]+=dat[R].tag;
+    		dat[R].tag=0;
+		}
+        for (int i = r%p; i >-1; i--) 
+            dat[R].local[i] = val;
+        dat[R].global=0;
+        for(int i=0;i<dat[R].local.size();i++)
+        	dat[R].global+=dat[R].local[i];
+    }
+}

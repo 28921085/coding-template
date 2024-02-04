@@ -1,0 +1,13 @@
+//喬瑟夫問題
+int josephus(int n, int m){	//n人每m次
+    int ans = 0;
+    for (int i=1; i<=n; ++i)
+        ans = (ans + m) % i;
+    return ans;
+}
+//費馬公市
+(a^(p-1))%p=1
+//葛雷碼
+for(; b < 1 << n; b ++)
+    for(i = n; i-- ;)
+        cout << ((b / 2 ^ b) >> i & 1) << "\n";

@@ -5,11 +5,16 @@
 ## data structure
 ### dsu
 ### segement tree
+### sqrt decomposition
+### trie
+## geometry
 ## graph
 ### dijkstra
+## math
 ## misc
 尚未整理的部分
 ## string
 ### hash
 ### KMP
+### manacher
 ### SA

@@ -1,0 +1,60 @@
+typedef long long ll;
+#define SQN 2000
+int num[SQN*SQN];
+struct blk {
+    vector<ll> local;    //每塊的全部元素
+    ll global;           //儲存每塊的總和
+    ll tag;              //儲存整塊一起更新的值
+    blk() {                //初始化
+        local.clear();    //清空區間元素
+        tag = global = 0; //將區間總和先設為0
+    }
+};
+blk dat[SQN];
+void build(int n) {
+    int p = sqrt(n);//塊數
+    for (int i = 0; i < n; i++) {
+        dat[i / p].local.push_back(num[i]);
+        dat[i / p].global += num[i];
+    }
+}
+ll query(int l,int r,int n) {//l r base 0 l<=range<=r
+    int p=sqrt(n),L = l / p, R = r / p;
+    ll ans = 0;
+    if (L == R) {    //如果都在同一塊直接一個一個跑過去就好
+        for (int i = l; i <= r; i++)
+            ans += dat[L].local[i % p] + dat[L].tag;
+    }
+    else {
+        for (int i = l; i < (L + 1) * p; i++)    //最左的那一塊
+            ans += dat[L].local[i % p] + dat[L].tag;
+        for (int i = L + 1; i < R; i++)    //中間每塊的總和
+            ans += dat[i].global;
+        for (int i = R * p; i <= r; i++)    //最右的那一塊
+            ans += dat[R].local[i % p] + dat[R].tag;
+    }
+    return ans;
+}
+void update(int l,int r,int n,int val) {
+    int p = sqrt(n), L = l / p, R = r / p;
+    if (L == R) {
+        for (int i = l; i <= r; i++) {
+            dat[L].local[i % p] += val;
+            dat[L].global += val;
+        }
+    }
+    else {
+        for (int i = l; i < (L + 1) * p; i++) {  //最左的那一塊
+            dat[L].local[i % p] += val;
+            dat[L].global += val;
+        }
+        for (int i = L + 1; i < R; i++) {  //中間每塊
+            dat[i].tag += val;
+            dat[i].global += val * p;
+        }
+        for (int i = R * p; i <= r; i++) {  //最右的那一塊
+            dat[R].local[i % p] += val;
+            dat[R].global += val;
+        }
+    }
+}
