@@ -12,7 +12,7 @@ struct dsu{
             p.push_back(i);
     }
 };
------
+-----//short
 int p[1000001];
 int find(int x) {
     return (x == p[x]) ? x : (p[x] = find(p[x]));
@@ -22,7 +22,7 @@ void  merge(int x, int y){
     x = find(x), y = find(y);
     p[x] = y;
 }
--------
+-------//啟發式合併
 int  merge(int x, int y){
     x = find(x), y = find(y);
     if (x == y)

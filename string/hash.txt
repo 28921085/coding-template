@@ -1,31 +1,33 @@
 typedef long long ll;
-    struct hash{
-        ll md1,p1,md2,p2;
-        vector<ll>val1,val2,pn1,pn2;
-        ll cal(int l,int r,int num){
-            if(num==1)
-                return ((val1[r+1]+md1-val1[l]*pn1[r-l+1])%md1+md1)%md1;
-            return ((val2[r+1]+md2-val2[l]*pn2[r-l+1])%md2+md2)%md2;
-        }
-        ll val(int l,int r){
-            return cal(l,r,1)*2e9+cal(l,r,2);
+    struct h{
+        ll md,p;
+        vector<ll>val,pn;
+        ll cal(int l,int r){
+            return ((val[r+1]+md-val[l]*pn[r-l+1])%md+md)%md;
         }
         void add(char c){
-            val1.push_back((val1.back()*p1+c)%md1);
-            val2.push_back((val2.back()*p2+c)%md2);
-            pn1.push_back((pn1.back()*p1)%md1);
-            pn2.push_back((pn2.back()*p2)%md2);
+            val.push_back((val.back()*p+c)%md);
+            pn.push_back((pn.back()*p)%md);
         }
-        hash(string str){
-            val1={1},val2={1};
-            pn1={1},pn2={1};
-            md1=1e9+7,p1=53;
-            md2=1e9+9,p2=31;
+        void init(string &str,ll m,ll P){
+            val=pn={1},md=m,p=P;
             for(auto i:str){
-                val1.push_back((val1.back()*p1+i)%md1);
-                val2.push_back((val2.back()*p2+i)%md2);
-                pn1.push_back((pn1.back()*p1)%md1);
-                pn2.push_back((pn2.back()*p2)%md2);
+                val.push_back((val.back()*p+i)%md);
+                pn.push_back((pn.back()*p)%md);
             }
+        }
+    };
+    struct hash{
+        h h1,h2;
+        ll val(int l,int r){
+            return h1.cal(l,r)*2e9+h2.cal(l,r);
+        }
+        void add(char c){
+            h1.add(c);
+            h2.add(c);
+        }
+        hash(string &str){
+            h1.init(str,1e9+7,53);
+            h2.init(str,1e9+9,31);
         }
     };
