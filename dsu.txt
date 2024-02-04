@@ -1,0 +1,33 @@
+struct dsu{
+    vector<int>p;
+    int find(int x) {
+        return (x == p[x]) ? x : (p[x] = find(p[x]));
+    }
+    void  merge(int x, int y){
+        x = find(x), y = find(y);
+        p[x] = y;
+    }
+    dsu(int n){
+        for(int i=0;i<n;i++)
+            p.push_back(i);
+    }
+};
+-----
+int p[1000001];
+int find(int x) {
+    return (x == p[x]) ? x : (p[x] = find(p[x]));
+}
+
+void  merge(int x, int y){
+    x = find(x), y = find(y);
+    p[x] = y;
+}
+-------
+int  merge(int x, int y){
+    x = find(x), y = find(y);
+    if (x == y)
+        return 0;
+    p[x] = y;
+    return 1;
+}
+

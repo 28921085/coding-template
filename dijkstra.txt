@@ -1,0 +1,42 @@
+typedef long long ll;
+#define pll pair<ll,ll>
+class Dijkstra {
+public:
+    int n;  // 節點數
+    ll INF,CANT_REACH;
+    vector<vector<pll>> graph;  // 鄰接表表示的圖
+    vector<ll> distance;  // 存儲起始節點到每個節點的最短距離
+    Dijkstra(int numNodes) : n(numNodes) {
+        INF=1e18,CANT_REACH=-1;
+        graph.resize(n);
+    }
+    void addEdge(int from, int to, int cost) {
+        graph[from].emplace_back(to, cost);
+    }
+    void dijkstra(int start) {
+        distance.assign(n,INF);
+        priority_queue<pll, vector<pll>, greater<pll>> pq;
+        distance[start] = 0;// 起點距離設為0
+        pq.emplace(0, start);
+        while (!pq.empty()) {
+            int u = pq.top().second;
+            int dist_u = pq.top().first;
+            pq.pop();
+            // 檢查 u 是否已經更新過
+            if (dist_u > distance[u]) continue;
+            // 遍歷相鄰節點
+            for (auto edge : graph[u]) {
+                int v = edge.first;
+                int weight_uv = edge.second;
+                // 更新最短距離
+                if (distance[u] + weight_uv < distance[v]) {
+                    distance[v] = distance[u] + weight_uv;
+                    pq.emplace(distance[v], v);
+                }
+            }
+        }
+    }
+    ll dist(int idx) {// 取得起始節點到指定節點的最短距離
+        return distance[idx]==INF?CANT_REACH:distance[idx];
+    }
+};
