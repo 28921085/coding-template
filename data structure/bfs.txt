@@ -1,0 +1,19 @@
+typedef long long ll;
+    struct bfs{
+        queue<vector<int>>q;
+        unordered_set<ll>s;
+        ll hash(vector<int>&v){
+            ll md=1e10+19,p=1e9+7,sum=0;
+            for(auto i:v)
+                sum*=p,sum+=i,sum%=md;
+            return sum;
+        }
+        void push(vector<int>t){
+            ll h=hash(t);
+            if(!s.count(h))
+                s.insert(h),q.push(t);
+        }
+        vector<int>&front(){return q.front();}
+        void pop(){q.pop();}
+        bool empty(){return q.empty();}
+    };
