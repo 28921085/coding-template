@@ -1,0 +1,9 @@
+    struct vectorHash{
+        int&operator()(vector<int>&v){
+            int hash = v.size();
+            for(auto &i : v) 
+                hash ^= i + 0x9e3779b9 + (hash << 6) + (hash >> 2);
+            return hash;
+        }
+    };
+    unordered_map<vector<int>,int,vectorHash>mp;
