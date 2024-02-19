@@ -1,22 +1,30 @@
-struct trie{
-    struct node{
-        node *nxt[26];
-        int cnt, sz;
-        node():cnt(0),sz(0){
-            memset(nxt,0,sizeof(nxt));
+    struct trie{
+        struct node{
+            node *nxt[26];
+            int cnt, sz;
+            node():cnt(0),sz(0){memset(nxt,0,sizeof(nxt));}
+        };
+        node *root;
+        int ct,ch='a';
+        trie(){root = new node();ct=ans=0;}
+        void insert(const string& s){
+            node *now = root;
+            for(auto i:s){
+                now->sz++;
+                if(now->nxt[i-ch] == NULL)
+                    now->nxt[i-ch] = new node();
+                now = now->nxt[i-ch];
+            }
+            now->cnt++;
+            now->sz++;
+        }
+        int query(string s){//find s appear times
+            node *now = root;
+            for(auto i:s){
+                if(now->nxt[i-ch]==NULL)
+                    return 0;
+                now=now->nxt[i-ch];
+            }
+            return now->cnt;
         }
     };
-    node *root;
-    trie(){root = new node();}
-    void insert(const string& s){
-        node *now = root;
-        for(auto i:s){
-            now->sz++;
-            if(now->nxt[i-'a'] == NULL)
-                now->nxt[i-'a'] = new node();
-            now = now->nxt[i-'a'];
-        }
-        now->cnt++;
-        now->sz++;
-    }
-};
