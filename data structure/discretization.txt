@@ -1,0 +1,21 @@
+struct disc{//discretization 離散化
+    vector<int>rec;
+    unordered_map<int,int>mp;
+    set<int>s;
+    int cnt;
+    void add(int tar){s.insert(tar);}
+    void add(vector<int>v){
+        for(auto i:v)
+            s.insert(i);
+    }
+    void run(){
+        cnt=0;
+        for(auto i:s){
+            mp[i]=cnt++;
+            rec.push_back(i);
+        }
+    }
+    int get(int key){return rec[key];}
+    int key(int tar){return mp[tar];}
+    int size(){return cnt;}
+};

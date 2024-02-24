@@ -5,6 +5,8 @@
 ## data structure
 ### bfs
 使Bfs實作較方便的資料結構，改良自queue，數字大小上限約1e9
+### discretization 
+離散化，執行run後會使插入的資料排序並給一個key=[0,size)，可以O(1)查資料的key和查key對應的資料，add可以輸入int和vector<int>
 ### dsu
 ### segement tree
 使lazy tag的操作較容易修改，僅需修改op、range_op、push、pull，預設為ADD操作
