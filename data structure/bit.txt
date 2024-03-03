@@ -1,15 +1,16 @@
-typedef long long ll;
+//單點修改
+    typedef long long ll;
     struct bit{
         int sz;
         vector<ll>p;
         int lowbit(int n){return n&(-n);}
-        void update(int n,int val){
-            for(;n<=sz;n+=lowbit(n))
+        void update(int n,ll val){
+            for(++n;n<=sz;n+=lowbit(n))
                 p[n]+=val;
         }
         ll q(int n){
             ll ans=0;
-            for(;n;n-=lowbit(n))
+            for(++n;n;n-=lowbit(n))
                 ans+=p[n];
             return ans;
         }

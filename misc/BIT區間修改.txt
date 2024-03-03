@@ -34,3 +34,28 @@ int main(){
 		}
 	}
 }
+
+typedef long long ll;//but wa
+    struct bit{
+        int sz;
+        vector<ll>p,p2;
+        int lowbit(int n){return n&(-n);}
+        void u(int n,ll val){
+            n++;
+            for(int i=n;i<=sz;i+=lowbit(n))
+                p[i]+=val,p2[i]+=n*val;
+        }
+        ll q(int n){
+            ll ans=0;
+            n++;
+            for(int i=n;i;i-=lowbit(i))
+                ans+=p[i]*(n+1)-p2[i];
+            return ans;
+        }
+        void update(int l,int r,ll val){u(l,val),u(r+1,-val);};
+        ll query(int l,int r){return q(r)-q(l-1);}
+        bit(int n){
+            sz=n;
+            p=p2=vector<ll>(n+2);
+        }
+    };
