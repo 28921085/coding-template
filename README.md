@@ -43,15 +43,26 @@ disjoint set unoin 並查集
 ## graph
 ### dijkstra
 ## math
+### isprime
+有兩種時間複雜度，依需求使用
+1. O(sqrt(n)) for each query
+2. O(nlgn) for build, O(1) for each query
 ## misc
 尚未整理的部分
 ## stl expansion
 ### priority_queue
 priority_queue<vector<int>> ，可能存在問題
+### string
+split(string, token): 類似python的split，return一個vector
+
+substr(string, l, r): 將切割方式從[l,l+r)改成[l,r]
 ### unordered_map
 unordered_map<vector<int>,T>
 ## string
 ### hash
+[Sample](https://hackmd.io/kfG8cKWFTimdIkL8DmgCYw?view#hash)
+
+可以O(1)比對兩字串是否相等，採用double hashing
 ### KMP
 ### manacher
 ### SA

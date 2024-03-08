@@ -1,0 +1,19 @@
+//split
+    vector<string>split(string &str,char t){
+        vector<string>res;
+        string tmp;
+        for(auto i:str){
+            if(i==t){
+                res.push_back(tmp);
+                tmp="";
+            }
+            else
+                tmp+=i;
+        }
+        res.push_back(tmp);
+        return res;
+    }
+//substr
+    string substr(string &str,int l,int r){
+        return str.substr(l,(r-l+1));
+    }

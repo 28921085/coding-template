@@ -1,32 +1,23 @@
-typedef long long ll;
+    typedef long long ll;
     struct hash{
         struct h{
             ll md,p;
             vector<ll>val,pn;
-            ll cal(int l,int r){
-                return ((val[r+1]+md-val[l]*pn[r-l+1])%md+md)%md;
-            }
-            void add(char c){
+            ll cal(int l,int r){ return ((val[r+1]+md-val[l]*pn[r-l+1])%md+md)%md;}
+            void add(char &c){
                 val.push_back((val.back()*p+c)%md);
                 pn.push_back((pn.back()*p)%md);
             }
-            void init(string &str,ll m,ll P){
+            h(string &str,ll m,ll P){
                 val=pn={1},md=m,p=P;
-                for(auto i:str){
-                    val.push_back((val.back()*p+i)%md);
-                    pn.push_back((pn.back()*p)%md);
-                }
+                for(auto i:str)
+                    add(i);
             }
         }h1,h2;
-        ll val(int l,int r){
-            return h1.cal(l,r)*2e9+h2.cal(l,r);
-        }
+        ll val(int l,int r){ return h1.cal(l,r)*2e9+h2.cal(l,r);}
         void add(char c){
             h1.add(c);
             h2.add(c);
         }
-        hash(string &str){
-            h1.init(str,1e9+7,53);
-            h2.init(str,1e9+9,31);
-        }
+        hash(string &str):h1(str,1e9+7,53),h2(str,1e9+9,31){}
     };
