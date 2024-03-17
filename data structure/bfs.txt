@@ -1,3 +1,18 @@
+//bfs with dp
+    struct bfs{
+        queue<pair<int,int>>q;
+        unordered_map<int,int>mp;
+        void push(pair<int,int>t){
+            if(mp[t.first]>t.second){
+                mp[t.first]=t.second;
+                q.push(t);
+            }
+        }
+        pair<int,int>&front(){return q.front();}
+        void pop(){q.pop();}
+        bool empty(){return q.empty();}
+    };
+//bfs with >2 arguments
 typedef long long ll;
     struct bfs{
         queue<vector<int>>q;

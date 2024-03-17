@@ -4,7 +4,11 @@
 三分搜尋法
 ## data structure
 ### bfs
-使Bfs實作較方便的資料結構，改良自queue，數字大小上限約1e9
+使Bfs實作較方便的資料結構，改良自queue
+
+V1 with dp: t.first=index, t.second=val，會根據val值進行判斷，如果當前val>=最佳val則不會push進去，節省時間
+
+V2 with mutiple argument: 將資料包成vector，只會比對資料有沒有出現過，出現過不會push進去，數字大小上限約1e9
 ### bit
 [Sample](https://hackmd.io/kfG8cKWFTimdIkL8DmgCYw?view#bit)
 
@@ -34,6 +38,16 @@ Base 0，區間操作為[L,R]
 [Sample](https://hackmd.io/kfG8cKWFTimdIkL8DmgCYw#dsu)
 
 disjoint set unoin 並查集
+### quad tree
+四叉樹，類似2D的BIT，只是每次遞迴切成四等分，模擬產生一個(sz+1)*(sz+1)的array，範圍為[0,sz]，但當存取陣列內容時才會初始化
+
+init: 設定sz，O(1) 
+
+update: 單點修改，O lg(n)可以讓array[x][y]+=val
+
+query: 區間查詢，O lg(n)查詢array[x][y]~array[a][b]圍成的四邊形內元素的和，有防呆，輸入左上右下或左下右上結果都一樣
+
+通常會搭配離散化使用
 ### segement tree
 使lazy tag的操作較容易修改，僅需修改op、range_op、push、pull，預設為ADD操作，區間操作為[L,R]，Base 0
 ### sqrt decomposition

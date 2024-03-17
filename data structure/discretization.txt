@@ -4,7 +4,7 @@ struct disc{//discretization 離散化
     set<int>s;
     int cnt;
     void add(int tar){s.insert(tar);}
-    void add(vector<int>v){
+    void add(vector<int>&v){
         for(auto i:v)
             s.insert(i);
     }

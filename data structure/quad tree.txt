@@ -1,0 +1,58 @@
+    struct Quadtree {
+        struct node {
+            int val = 0;
+            node* child[4] = {nullptr, nullptr, nullptr, nullptr};
+        };
+        node* root;
+        int size;
+        Quadtree(int n) {
+            size = n+1;
+            root = nullptr;
+        }
+        vector<int>normalize(int x,int y,int a,int b){
+            return {min(x,a),min(y,b),max(x,a),max(y,b)};
+        }
+        void update(int x, int y, int val) {
+            root = update_helper(root, 0, size - 1, 0, size - 1, x, y, val);
+        }
+        int query(int x, int y, int a, int b) {
+            auto pt=normalize(x,y,a,b);
+            return query_helper(root, 0, size - 1, 0, size - 1, pt[0], pt[1], pt[2], pt[3]);
+        }
+        node* update_helper(node* curr, int x1, int x2, int y1, int y2, int x, int y, int val) {
+            if (!curr) 
+                curr = new node();
+            if (x1 == x2 && y1 == y2) {
+                curr->val += val;
+                return curr;
+            }
+            int xm = (x1 + x2) / 2;
+            int ym = (y1 + y2) / 2;
+            if (x <= xm && y <= ym) 
+                curr->child[0] = update_helper(curr->child[0], x1, xm, y1, ym, x, y, val);
+            else if (x <= xm && y > ym) 
+                curr->child[1] = update_helper(curr->child[1], x1, xm, ym + 1, y2, x, y, val);
+            else if (x > xm && y <= ym) 
+                curr->child[2] = update_helper(curr->child[2], xm + 1, x2, y1, ym, x, y, val);
+            else 
+                curr->child[3] = update_helper(curr->child[3], xm + 1, x2, ym + 1, y2, x, y, val);
+            curr->val = 0;
+            for (int i = 0; i < 4; ++i) 
+                if (curr->child[i]) 
+                    curr->val += curr->child[i]->val;
+            return curr;
+        }
+        int query_helper(node* curr, int x1, int x2, int y1, int y2, int a, int b, int c, int d) {
+            if (!curr) return 0;
+            if (x1 > c || x2 < a || y1 > d || y2 < b) return 0;
+            if (a <= x1 && x2 <= c && b <= y1 && y2 <= d) return curr->val;
+            int xm = (x1 + x2) / 2;
+            int ym = (y1 + y2) / 2;
+            int sum = 0;
+            sum += query_helper(curr->child[0], x1, xm, y1, ym, a, b, c, d);
+            sum += query_helper(curr->child[1], x1, xm, ym + 1, y2, a, b, c, d);
+            sum += query_helper(curr->child[2], xm + 1, x2, y1, ym, a, b, c, d);
+            sum += query_helper(curr->child[3], xm + 1, x2, ym + 1, y2, a, b, c, d);
+            return sum;
+        }
+    };
