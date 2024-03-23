@@ -38,6 +38,8 @@ Base 0，區間操作為[L,R]
 [Sample](https://hackmd.io/kfG8cKWFTimdIkL8DmgCYw#dsu)
 
 disjoint set unoin 並查集
+
+有支援同時計算size的功能
 ### quad tree
 四叉樹，類似2D的BIT，只是每次遞迴切成四等分，模擬產生一個(sz+1)*(sz+1)的array，範圍為[0,sz]，但當存取陣列內容時才會初始化
 
