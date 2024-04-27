@@ -35,7 +35,9 @@ Base 0，區間操作為[L,R]
     }
 ```
 ### dsu
-[Sample](https://hackmd.io/kfG8cKWFTimdIkL8DmgCYw#dsu)
+普通版: [Sample](https://hackmd.io/kfG8cKWFTimdIkL8DmgCYw#dsu)
+
+With Size: [Sample](https://hackmd.io/kfG8cKWFTimdIkL8DmgCYw?view#dsu-with-size)
 
 disjoint set unoin 並查集
 
