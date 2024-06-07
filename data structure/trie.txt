@@ -6,7 +6,7 @@
         };
         node *root;
         int ct,ch='a';
-        trie(){root = new node();ct=ans=0;}
+        trie(){root = new node();ct=0;}
         void insert(const string& s){
             node *now = root;
             for(auto i:s){
